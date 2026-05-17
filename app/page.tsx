@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div style={{minHeight:'100vh', backgroundColor:'#f0f4f8', fontFamily:'sans-serif'}}>
       
-      <div style={{backgroundColor:'#332ddc', padding:'16px 32px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+      <div style={{backgroundColor: '#166534', padding:'16px 32px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
         <h1 style={{color:'white', margin:0, fontSize:'20px'}}>SISTEM TATA TERTIB DIGITAL SPENSI TAHUN PELAJARAN 2026/2027</h1>
         <span style={{color:'white', fontSize:'14px'}}>UPT SMP NEGERI 1 WLINGI</span>
       </div>
@@ -14,7 +14,7 @@ export default function Home() {
           
           <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #3b82f6'}}>
             <p style={{color:'#888', fontSize:'12px', margin:'0 0 8px'}}>TOTAL SISWA</p>
-            <p style={{fontSize:'32px', fontWeight:'bold', color:'#1e40af', margin:0}}>960</p>
+            <p style={{fontSize:'32px', fontWeight:'bold', color:'#1e40af', margin:0}}>955</p>
           </div>
 
           <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #16a34a'}}>
@@ -24,7 +24,7 @@ export default function Home() {
 
           <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #f59e0b'}}>
             <p style={{color:'#888', fontSize:'12px', margin:'0 0 8px'}}>WALI MURID</p>
-            <p style={{fontSize:'32px', fontWeight:'bold', color:'#b45309', margin:0}}>960</p>
+            <p style={{fontSize:'32px', fontWeight:'bold', color:'#b45309', margin:0}}>954</p>
           </div>
 
           <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #ef4444'}}>
