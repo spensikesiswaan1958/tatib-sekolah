@@ -8,7 +8,7 @@ export default function Home() {
       </div>
 
       <div style={{padding:'32px'}}>
-        <p style={{color:'#555', marginBottom:'24px'}}>Selamat datang, Admin Kesiswaan</p>
+        <p style={{color:'#555', marginBottom:'24px'}}>Selamat datang, Tim Kesiswaan UPT SMP Negeri 1 Wlingi</p>
 
         <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'16px', marginBottom:'32px'}}>
           
