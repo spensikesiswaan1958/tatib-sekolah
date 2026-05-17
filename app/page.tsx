@@ -9,7 +9,9 @@ export default function Home() {
 
       <div style={{padding:'32px'}}>
         <p style={{color:'#555', marginBottom:'24px'}}>Selamat datang, Kesiswaan UPT SMP Negeri 1 Wlingi</p>
-
+<p style={{color:'#888', fontSize:'13px', marginBottom:'24px'}}>
+  Tahun Pelajaran 2026/2027 — Semester Genap
+</p>
         <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'16px', marginBottom:'32px'}}>
           
           <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #3b82f6'}}>
