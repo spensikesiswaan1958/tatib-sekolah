@@ -1,79 +1,57 @@
-export default function Home() {
+import { supabase } from '../lib/supabase'
+
+export default async function Home() {
+  // Mengambil 1 baris data dari tabel kategori_pelanggaran untuk tes
+  const { data, error } = await supabase.from('kategori_pelanggaran').select('*').limit(1)
+
   return (
-    <div style={{minHeight:'100vh', backgroundColor:'#f0f4f8', fontFamily:'sans-serif'}}>
+    <div style={{ padding: '40px', fontFamily: 'sans-serif' }}>
+      <h1>Status Koneksi Proyek Tata Tertib</h1>
+      <hr style={{ margin: '20px 0' }} />
       
-      <div style={{backgroundColor: '#166534', padding:'16px 32px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-        <h1 style={{color:'white', margin:0, fontSize:'20px'}}>SISTEM TATA TERTIB DIGITAL SPENSI TAHUN PELAJARAN 2026/2027</h1>
-        <span style={{color:'white', fontSize:'14px'}}>UPT SMP NEGERI 1 WLINGI</span>
-      </div>
-
-      <div style={{padding:'32px'}}>
-        <p style={{color:'#555', marginBottom:'24px'}}>Selamat datang, Admin Tata Tertip UPT SMP Negeri 1 Wlingi</p>
-<p style={{color:'#888', fontSize:'13px', marginBottom:'24px'}}>
-  Tahun Pelajaran 2026/2027 — Semester Genap
-</p>
-        <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'16px', marginBottom:'32px'}}>
-          
-          <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #3b82f6'}}>
-            <p style={{color:'#888', fontSize:'12px', margin:'0 0 8px'}}>TOTAL SISWA</p>
-            <p style={{fontSize:'32px', fontWeight:'bold', color:'#1e40af', margin:0}}>955</p>
-          </div>
-
-          <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #16a34a'}}>
-            <p style={{color:'#888', fontSize:'12px', margin:'0 0 8px'}}>GURU & KARYAWAN</p>
-            <p style={{fontSize:'32px', fontWeight:'bold', color:'#15803d', margin:0}}>75</p>
-          </div>
-
-          <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #f59e0b'}}>
-            <p style={{color:'#888', fontSize:'12px', margin:'0 0 8px'}}>WALI MURID</p>
-            <p style={{fontSize:'32px', fontWeight:'bold', color:'#b45309', margin:0}}>954</p>
-          </div>
-
-          <div style={{backgroundColor:'white', borderRadius:'8px', padding:'20px', borderLeft:'4px solid #ef4444'}}>
-            <p style={{color:'#888', fontSize:'12px', margin:'0 0 8px'}}>PELANGGARAN</p>
-            <p style={{fontSize:'32px', fontWeight:'bold', color:'#b91c1c', margin:0}}>0</p>
-          </div>
-
+      {error ? (
+        <div style={{ color: 'red', backgroundColor: '#fde8e8', padding: '15px', borderRadius: '5px' }}>
+          ❌ <strong>Koneksi Gagal!</strong> <br />
+          Pesan Error: {error.message}
         </div>
-
-        <div style={{backgroundColor:'white', borderRadius:'8px', padding:'24px'}}>
-          <h2 style={{fontSize:'16px', marginBottom:'16px', color:'#333'}}>Menu Utama</h2>
-          <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'12px'}}>
-            
-            <div style={{backgroundColor:'#eff6ff', borderRadius:'8px', padding:'16px', textAlign:'center', cursor:'pointer'}}>
-              <p style={{fontSize:'24px', margin:'0 0 8px'}}>👥</p>
-              <p style={{fontWeight:'bold', color:'#1e40af', margin:0}}>Data Siswa</p>
-            </div>
-
-            <div style={{backgroundColor:'#f0fdf4', borderRadius:'8px', padding:'16px', textAlign:'center', cursor:'pointer'}}>
-              <p style={{fontSize:'24px', margin:'0 0 8px'}}>📋</p>
-              <p style={{fontWeight:'bold', color:'#15803d', margin:0}}>Input Pelanggaran</p>
-            </div>
-
-            <div style={{backgroundColor:'#fefce8', borderRadius:'8px', padding:'16px', textAlign:'center', cursor:'pointer'}}>
-              <p style={{fontSize:'24px', margin:'0 0 8px'}}>📊</p>
-              <p style={{fontWeight:'bold', color:'#b45309', margin:0}}>Laporan</p>
-            </div>
-
-            <div style={{backgroundColor:'#fff7ed', borderRadius:'8px', padding:'16px', textAlign:'center', cursor:'pointer'}}>
-              <p style={{fontSize:'24px', margin:'0 0 8px'}}>📱</p>
-              <p style={{fontWeight:'bold', color:'#c2410c', margin:0}}>Scan Absensi</p>
-            </div>
-
-            <div style={{backgroundColor:'#fdf4ff', borderRadius:'8px', padding:'16px', textAlign:'center', cursor:'pointer'}}>
-              <p style={{fontSize:'24px', margin:'0 0 8px'}}>👨‍👩‍👧</p>
-              <p style={{fontWeight:'bold', color:'#7e22ce', margin:0}}>Portal Orang Tua</p>
-            </div>
-
-            <div style={{backgroundColor:'#f0f9ff', borderRadius:'8px', padding:'16px', textAlign:'center', cursor:'pointer'}}>
-              <p style={{fontSize:'24px', margin:'0 0 8px'}}>⚙️</p>
-              <p style={{fontWeight:'bold', color:'#0369a1', margin:0}}>Pengaturan</p>
-            </div>
-
-          </div>
+      ) : (
+        <div style={{ color: 'green', backgroundColor: '#def7ec', padding: '15px', borderRadius: '5px' }}>
+          ✅ <strong>Koneksi Sukses!</strong> Next.js berhasil tersambung ke Supabase. <br />
+          <p style={{ color: '#333', marginTop: '10px' }}>
+            Contoh data yang berhasil ditarik: <strong>{data && data[0] ? data[0].jenis_pelanggaran : 'Data kosong'}</strong>
+          </p>
         </div>
-
-      </div>
+      )}
     </div>
   )
 }
+```[cite: 1]
+
+Jangan lupa tekan **Ctrl + S** untuk menyimpan file `app/page.tsx`[cite: 1].
+
+### 2. Jalankan Aplikasi di Terminal
+Sekarang jalankan server lokal proyek kamu.
+1. Klik area **Terminal** di bagian bawah VS Code[cite: 1].
+2. Ketik perintah berikut lalu tekan **Enter**:
+   ```bash
+npm run dev
+```[cite: 1]
+3. Tunggu sampai muncul tulisan `ready - started server on http://localhost:3000`.
+
+### 3. Cek Hasilnya di Browser
+* Buka browser kamu (Chrome/Edge), lalu buka alamat: **`http://localhost:3000`**[cite: 1]
+* Lihat kotak yang muncul di layar:
+
+<blockquote>
+  💚 <strong>Jika Muncul Kotak Hijau ("Koneksi Sukses!"):</strong><br />
+  Selamat! Berarti file <code>.env.local</code> dan file <code>lib/supabase.ts</code> kamu sudah bekerja 100% dengan benar. Target Hari 13 <strong>Selesai!</strong> Kamu bisa menandai centang hijau di tracker milikmu.
+</blockquote>
+
+<blockquote>
+  ❤️ <strong>Jika Muncul Kotak Merah ("Koneksi Gagal!"):</strong><br />
+  Artinya ada kesalahan ketik (typo) saat kamu memasukkan URL atau Anon Key di file <code>.env.local</code>. Periksa kembali isi file tersebut dan pastikan tidak ada spasi di antara tanda sama dengan (<code>=</code>).
+</blockquote>
+
+---
+
+Jika kotak hijau sudah menyala di browser, kamu bisa mengembalikan isi `app/page.tsx` ke tampilan awal kamu atau membiarkannya begitu saja untuk bersiap lanjut ke **Hari 14 (Menampilkan daftar siswa)** besok[cite: 1]!
