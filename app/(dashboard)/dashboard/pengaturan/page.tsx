@@ -1,21 +1,32 @@
 import { requireAdmin } from '@/lib/rbac-server'
 import { createClient } from '@/lib/supabase/server'
 import { Settings, Shield, Bell, Database, Info } from 'lucide-react'
+import ManajemenAkunClient from './ManajemenAkunClient'
 
 export default async function PengaturanPage() {
   const user = await requireAdmin()
   const supabase = await createClient()
 
-  const { data: ambang } = await supabase
-    .from('ambang_batas_sanksi')
-    .select('id, poin_minimal, sanksi')
-    .order('poin_minimal', { ascending: true })
-
-  const { data: profilSekolah } = await supabase
-    .from('profil_sekolah')
-    .select('*')
-    .limit(1)
-    .single()
+  const [
+    { data: ambang },
+    { data: profilSekolah },
+    { data: akunList },
+  ] = await Promise.all([
+    supabase
+      .from('ambang_batas_sanksi')
+      .select('id, poin_minimal, sanksi')
+      .order('poin_minimal', { ascending: true }),
+    supabase
+      .from('profil_sekolah')
+      .select('*')
+      .limit(1)
+      .single(),
+    supabase
+      .from('akun')
+      .select('id, nama, email, peran, created_at')
+      .order('peran', { ascending: true })
+      .order('nama', { ascending: true }),
+  ])
 
   return (
     <div className="p-6 space-y-6 max-w-3xl mx-auto">
@@ -89,6 +100,9 @@ export default async function PengaturanPage() {
         </div>
       </div>
 
+      {/* ✅ Manajemen Akun — BARU */}
+      <ManajemenAkunClient akunList={akunList ?? []} />
+
       {/* Info Sistem */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
@@ -101,7 +115,7 @@ export default async function PengaturanPage() {
           {[
             { label: 'Framework',  val: 'Next.js 15 App Router' },
             { label: 'Database',   val: 'Supabase (PostgreSQL)' },
-            { label: 'Auth',       val: 'Supabase Auth (segera)' },
+            { label: 'Auth',       val: 'Supabase Auth' },
             { label: 'Versi',      val: '1.0.0-beta' },
             { label: 'Sekolah',    val: 'UPT SMPN 1 Wlingi' },
           ].map(item => (
@@ -113,7 +127,7 @@ export default async function PengaturanPage() {
         </div>
       </div>
 
-      {/* Notifikasi (placeholder) */}
+      {/* Notifikasi */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-sm">
