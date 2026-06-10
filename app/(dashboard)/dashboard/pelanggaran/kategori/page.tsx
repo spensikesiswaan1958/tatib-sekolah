@@ -1,5 +1,6 @@
 // Server Component (default — tidak perlu "use client")
 // Mengambil data langsung dari Supabase di server, aman & cepat
+import { requireAdmin } from '@/lib/rbac-server'
 import { createClient } from '@/lib/supabase/server'
 import { KategoriPelanggaran } from '@/types/supabase'
 
@@ -25,6 +26,7 @@ function getPoinStyle(poin: number): string {
 }
 
 export default async function KategoriPelanggaranPage() {
+  const user = await requireAdmin()
   // 1. Buat Supabase server client
   const supabase = await createClient()
 

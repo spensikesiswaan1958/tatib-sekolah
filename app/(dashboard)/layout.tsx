@@ -1,16 +1,17 @@
+import { redirect } from 'next/navigation'
+import { getCurrentUser } from '@/lib/auth'
 import DashboardShell from '@/components/dashboard/DashboardShell'
-import Topbar from '@/components/dashboard/Topbar'
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Layout ini adalah Server Component.
-  // Topbar di-render di sini, lalu dikirim sebagai prop ke DashboardShell (Client).
-  // Ini pola resmi Next.js agar Server Component bisa hidup di dalam Client Component.
+  const user = await getCurrentUser()
+  if (!user) redirect('/login')
+
   return (
-    <DashboardShell topbar={<Topbar />}>
+    <DashboardShell user={user}>
       {children}
     </DashboardShell>
   )

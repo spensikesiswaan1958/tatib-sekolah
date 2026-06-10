@@ -1,57 +1,84 @@
-import { getCurrentUser, getDisplayName } from '@/lib/auth'
-import { LogOut, User } from 'lucide-react'
+'use client'
+
 import Link from 'next/link'
+import { Menu, User, LogOut, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
+import { getRoleLabel, getRoleBadgeColor } from '@/lib/rbac'
 
-export default async function Topbar() {
-  const userProfile = await getCurrentUser()
-  const displayName = userProfile ? getDisplayName(userProfile) : 'Pengguna'
-  const peran = userProfile?.peran ?? ''
-
-  const roleLabel: Record<string, string> = {
-    ADMIN:    'Administrator',
-    GURU:     'Guru / Wali Kelas',
-    GURU_BK:  'Guru BK',
-    OPERATOR: 'Operator',
-    SISWA:    'Siswa',
+type TopbarProps = {
+  onToggleSidebar: () => void
+  user: {
+    email: string
+    nama: string | null          // ← nama
+    peran: string | null
   }
+}
+
+export default function Topbar({ onToggleSidebar, user }: TopbarProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const displayName = user.nama ?? user.email.split('@')[0] ?? 'Pengguna'
 
   return (
-    <header className="h-14 bg-white flex items-center justify-between px-4 flex-shrink-0">
-      {/* Kiri */}
-      <span className="text-sm font-bold text-slate-700 hidden sm:block">
-        Sistem Tata Tertib Digital
-      </span>
+    <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-4 flex-shrink-0 z-30">
+      <button
+        onClick={onToggleSidebar}
+        className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
 
-      {/* Kanan */}
-      <div className="flex items-center gap-3 ml-auto">
-        {/* Chip user */}
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full pl-1.5 pr-3 py-1">
+      <div className="flex-1">
+        <h1 className="font-semibold text-gray-800 text-sm">
+          Sistem Tata Tertib Digital
+        </h1>
+      </div>
+
+      <div className="relative">
+        <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+        >
           <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-            <User size={14} className="text-white" />
+            <User className="w-3.5 h-3.5 text-white" />
           </div>
-          <div className="leading-tight hidden sm:block">
-            <p className="text-xs font-bold text-slate-700 max-w-[130px] truncate">
+          <div className="hidden sm:block text-left">
+            <p className="text-xs font-semibold text-gray-800 leading-none">
               {displayName}
             </p>
-            {peran && (
-              <p className="text-[10px] font-medium text-slate-500">
-                {roleLabel[peran] ?? peran}
-              </p>
-            )}
+            <span
+              className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full mt-0.5 inline-block ${getRoleBadgeColor(user.peran)}`}
+            >
+              {getRoleLabel(user.peran)}
+            </span>
           </div>
-        </div>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 hidden sm:block" />
+        </button>
 
-        {/* Tombol logout */}
-        <Link
-          href="/logout"
-          title="Keluar"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
-            text-slate-500 hover:text-red-600 hover:bg-red-50
-            border border-transparent hover:border-red-200 transition-all"
-        >
-          <LogOut size={16} />
-          <span className="hidden sm:inline">Keluar</span>
-        </Link>
+        {dropdownOpen && (
+          <>
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setDropdownOpen(false)}
+            />
+            <div className="absolute right-0 top-full mt-1 w-52 bg-white rounded-xl shadow-xl border border-gray-100 z-20 overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-50">
+                <p className="text-xs font-semibold text-gray-800">{displayName}</p>
+                <p className="text-[11px] text-gray-400 truncate">{user.email}</p>
+              </div>
+              <div className="p-1">
+                <Link
+                  href="/logout"
+                  className="flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <LogOut className="w-4 h-4" />
+                  Keluar
+                </Link>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </header>
   )

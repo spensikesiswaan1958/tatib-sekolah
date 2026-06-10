@@ -28,6 +28,8 @@ type LogItem = {
   kategori_pelanggaran: KategoriPelanggaran | null
 }
 
+export type LogPelanggaranDetail = LogItem
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeKategori(raw: any): KategoriPelanggaran | null {
   if (!raw) return null

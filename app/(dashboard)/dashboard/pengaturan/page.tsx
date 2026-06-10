@@ -1,7 +1,9 @@
+import { requireAdmin } from '@/lib/rbac-server'
 import { createClient } from '@/lib/supabase/server'
 import { Settings, Shield, Bell, Database, Info } from 'lucide-react'
 
 export default async function PengaturanPage() {
+  const user = await requireAdmin()
   const supabase = await createClient()
 
   const { data: ambang } = await supabase

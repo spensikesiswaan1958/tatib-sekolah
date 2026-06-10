@@ -4,7 +4,6 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
-  // Buat Supabase client khusus middleware (wajib pakai pola ini agar cookie di-refresh)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -26,42 +25,54 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // PENTING: Selalu gunakan getUser() (bukan getSession()) untuk keamanan
+  // PENTING: pakai getUser() bukan getSession()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
+  const pathname = request.nextUrl.pathname
 
-  // ── Aturan redirect ─────────────────────────────────────────────────────────
-
-  // 1. Akses /dashboard/* tanpa login → redirect ke /login
-  if (pathname.startsWith('/dashboard') && !user) {
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('next', pathname) // simpan tujuan asli
-    return NextResponse.redirect(loginUrl)
+  // ── Belum login → akses dashboard → redirect ke login ─────────────────────
+  if (!user && pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // 2. Akses /login sudah login → redirect ke /dashboard
-  if (pathname.startsWith('/login') && user) {
+  // ── Sudah login → akses /login → redirect sesuai role ─────────────────────
+  if (user && pathname === '/login') {
+    // Ambil role dari tabel akun
+    const { data: akun } = await supabase
+      .from('akun')
+      .select('peran')
+      .eq('id', user.id)
+      .single()
+
+    const peran = akun?.peran ?? null
+
+    if (peran === 'SISWA') {
+      return NextResponse.redirect(new URL('/dashboard/portal', request.url))
+    }
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // 3. Akses root "/" yang sudah login — biarkan, ini halaman publik
-  // (halaman publik tetap bisa diakses siapa saja)
+  // ── Siswa coba akses halaman non-portal → redirect ke portal ──────────────
+  if (user && pathname.startsWith('/dashboard') && pathname !== '/dashboard/portal') {
+    // Cek apakah siswa
+    const { data: akun } = await supabase
+      .from('akun')
+      .select('peran')
+      .eq('id', user.id)
+      .single()
+
+    if (akun?.peran === 'SISWA') {
+      return NextResponse.redirect(new URL('/dashboard/portal', request.url))
+    }
+  }
 
   return supabaseResponse
 }
 
 export const config = {
   matcher: [
-    /*
-     * Jalankan middleware di semua path KECUALI:
-     * - _next/static  (file statis Next.js)
-     * - _next/image   (optimisasi gambar)
-     * - favicon.ico
-     * - file gambar (.svg, .png, dll)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|images|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

@@ -1,7 +1,9 @@
+import { requireAdminOrGuru } from '@/lib/rbac-server'
 import { createClient } from '@/lib/supabase/server'
 import LogClient from './LogClient'
 
 export default async function LogPelanggaranPage() {
+  const user = await requireAdminOrGuru()
   const supabase = await createClient()
 
   const { data: logs, error } = await supabase
@@ -32,5 +34,5 @@ export default async function LogPelanggaranPage() {
     )
   }
 
-  return <LogClient data={logs ?? []} />
+  return <LogClient data={(logs as any) ?? []} />
 }

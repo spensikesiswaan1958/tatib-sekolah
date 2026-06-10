@@ -1,21 +1,17 @@
+import { requireAdminOrGuru } from '@/lib/rbac-server'
 import { createClient } from '@/lib/supabase/server'
-import { getCurrentUser, getDisplayName } from '@/lib/auth'
+import { getDisplayName } from '@/lib/auth'
 import TambahPelanggaranForm from './TambahPelanggaranForm'
 
 export default async function TambahPelanggaranPage() {
+  const user = await requireAdminOrGuru()
   const supabase = await createClient()
 
-  const [
-    { data: kategoriList, error },
-    currentUser,
-  ] = await Promise.all([
-    supabase
-      .from('kategori_pelanggaran')
-      .select('id, no_pelanggaran, nama_pelanggaran, poin, kategori')
-      .order('kategori', { ascending: true })
-      .order('no_pelanggaran', { ascending: true }),
-    getCurrentUser(),
-  ])
+  const { data: kategoriList, error } = await supabase
+    .from('kategori_pelanggaran')
+    .select('id, no_pelanggaran, nama_pelanggaran, poin, kategori')
+    .order('kategori', { ascending: true })
+    .order('no_pelanggaran', { ascending: true })
 
   if (error) {
     return (
@@ -25,13 +21,11 @@ export default async function TambahPelanggaranPage() {
     )
   }
 
-  const pencatat = currentUser
-    ? {
-        id:    currentUser.id,
-        nama:  getDisplayName(currentUser),
-        peran: (currentUser.peran ?? 'ADMIN') as 'ADMIN' | 'GURU' | 'SISWA',
-      }
-    : null
+  const pencatat = {
+    id:    user.id,
+    nama:  getDisplayName(user),
+    peran: (user.peran ?? 'ADMIN') as 'ADMIN' | 'GURU' | 'SISWA',
+  }
 
   return (
     <TambahPelanggaranForm

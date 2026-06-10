@@ -167,7 +167,7 @@ export default function AbsensiClient({
 
       if (absenError) throw new Error(absenError.message)
 
-      setAbsensiList(prev => [absenData as AbsensiItem, ...prev])
+      setAbsensiList(prev => [(absenData as unknown) as AbsensiItem, ...prev])
       showToast('success',
         `${siswa.nama_siswa} dicatat ${status}${STATUS_PELANGGARAN.includes(status) ? ' + pelanggaran otomatis' : ''}.`
       )

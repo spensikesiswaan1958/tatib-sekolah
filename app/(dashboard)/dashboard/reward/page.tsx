@@ -36,7 +36,7 @@ export default async function RewardPage() {
   return (
     <RewardClient
       masterReward={masterReward ?? []}
-      logReward={logReward ?? []}
+      logReward={(logReward as any) ?? []}
     />
   )
 }
